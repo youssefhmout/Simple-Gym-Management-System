@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GYM Y&J - Login</title>
+  <style>
+    /* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  user-select: none;
+}
+
+body {
+  background: #0a2e5d; /* أزرق غامق */
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #fff;
+  color: #0a2e5d;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 450px;
+  text-align: center;
+}
+
+.logo h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 0.2em;
+  color: #0a2e5d;
+}
+
+.logo h1 span.highlight {
+  color: #ffa500; /* برتقالي */
+  font-style: italic;
+  text-shadow: 0 0 8px #ffa500;
+}
+
+.logo h3 {
+  font-weight: 600;
+  color: #d68c02; /* برتقالي داكن */
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  width: fit-content;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #0a2e5d;
+}
+
+.form-group input {
+  margin-top: 8px;
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #0a2e5d;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #ffa500;
+  box-shadow: 0 0 8px #ffa500;
+}
+
+.btn-login {
+  background-color: #d68c02;
+  border: none;
+  padding: 15px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  border-radius: 12px;
+  color: #0a2e5d;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(214, 140, 2, 0.6);
+  user-select: none;
+}
+
+.btn-login:hover {
+  background-color: #ffa500;
+  box-shadow: 0 6px 15px rgba(255, 165, 0, 0.8);
+}
+
+
+i {
+  color: #ffa500;
+font-size: 2rem;
+
+}
+
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+
+<body>
+  <?php
+  session_start();
+  require_once('conn.php');
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $inputUsername = $_POST["user"];
+    $inputPassword = $_POST["pass"];
+    try{
+      $sql = "SELECT `username`, `password` FROM user WHERE `username`=? AND `password`=?";
+      $users = $conn->prepare($sql);
+      $users->execute([$inputUsername , $inputPassword]);
+      $t=$users->fetchAll();
+      if ($t) {
+      $_SESSION['username'] = $inputUsername;
+      header('Location: home.php');
+      exit();
+    }
+    }catch(PDOException $r)
+    {die($r->getMessage());}
+    
+     
+      echo "<script>
+window.onload = function() {
+  document.getElementById('user').style.border='2px solid red';
+  document.getElementById('pass').style.border='2px solid red';
+};
+</script>";
+    }
+  
+  ?>
+
+  <div class="container">
+    <header class="logo">
+      <h1>GYM Y&J</h1>
+      <h3>TRAIN HARD · STAY STRONG</h3>
+    </header>
+
+    <form class="login-form" method="post" action="<?php echo ($_SERVER['PHP_SELF']); ?>">
+      <div class="form-group">
+        <label for="user"><i class="bi bi-person-fill"></i> Username</label>
+        <input type="text" id="user" name="user" required />
+      </div>
+
+      <div class="form-group">
+        <label for="pass"><i class="bi bi-lock-fill"></i>Password</label>
+        <input type="password" id="pass" name="pass" required />
+      </div>
+
+      <button type="submit" class="btn-login" value="send">Login</button>
+    </form>
+  </div>
+
+</body>
+
+</html>
